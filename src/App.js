@@ -1,11 +1,10 @@
 // src/App.js
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-import { HeaderTopBar } from "./components/HeaderTopBar";
 import Home from "./pages/HomePage";
 import { MainNavigation } from "./components/MainNavigation";
 import SubNavigation from "./components/SubNavigation";
 import AuthPage from "./pages/AuthPage";
+import HeaderTopBar from "./components/HeaderTopBar";
 
 function App() {
   return (
