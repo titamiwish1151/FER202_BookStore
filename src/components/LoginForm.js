@@ -1,13 +1,21 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = ({ onLogin }) => {
+  const dispatch = useDispatch();
+  const navigation = useNavigate();
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [showPassword] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin({ email: loginEmail, password: loginPassword });
+
+    // Giả sử validate xong, dispatch login action
+    dispatch(login({ email: loginEmail, password: loginPassword }));
+    navigation("/");
   };
 
   return (

@@ -1,11 +1,21 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { signup } from "../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const SignupForm = ({ onSignup }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [signupEmail, setSignupEmail] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSignup(signupEmail);
+
+    dispatch(signup({ email: signupEmail }));
+
+    navigate("/fullSignup");
+
+    setSignupEmail("");
   };
 
   return (

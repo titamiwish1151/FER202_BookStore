@@ -1,8 +1,18 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Import Link and useNavigate
+import { useDispatch, useSelector } from "react-redux"; // Import useDispatch and useSelector
+import { logout } from "../features/auth/authSlice";
 
 export default function HeaderTopBar() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // Lấy trạng thái đăng nhập và thông tin người dùng từ Redux store
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const user = useSelector((state) => state.auth.user);
+
   const [location, setLocation] = useState("Puerto Rico");
   const [language, setLanguage] = useState("English");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State để quản lý hiển thị dropdown
 
   // Available options (for simplicity, you can expand this)
   const locations = ["Puerto Rico", "USA", "Canada"];
@@ -15,6 +25,39 @@ export default function HeaderTopBar() {
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleProfileClick = () => {
+    navigate("/input-form"); // Điều hướng đến trang hồ sơ người dùng
+    setIsDropdownOpen(false); // Đóng dropdown
+  };
+
+  const handleLogout = () => {
+    dispatch(logout()); // Dispatch action logout
+    localStorage.removeItem("ikea_signup_data"); // Xóa dữ liệu đăng ký từ localStorage
+    navigate("/"); // Điều hướng về trang chủ
+    setIsDropdownOpen(false); // Đóng dropdown
+  };
+
+  // Logic để đóng dropdown khi click ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Kiểm tra xem click có nằm ngoài vùng dropdown hay không
+      if (
+        isDropdownOpen &&
+        event.target.closest(".user-dropdown-container") === null
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]); // Chỉ chạy lại khi isDropdownOpen thay đổi
 
   return (
     <header
@@ -39,8 +82,6 @@ export default function HeaderTopBar() {
         }}
       >
         <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-          {" "}
-          {/* Added alignItems: 'center' here */}
           {/* Location Selector */}
           <div style={{ display: "flex", alignItems: "center" }}>
             <svg
@@ -105,7 +146,7 @@ export default function HeaderTopBar() {
             </svg>
             <select
               value={language}
-              onClick={handleLanguageChange}
+              onChange={handleLanguageChange} // Changed from onClick to onChange for select
               style={{
                 border: "none",
                 outline: "none",
@@ -127,27 +168,127 @@ export default function HeaderTopBar() {
           <a href="/" style={{ textDecoration: "none", color: "inherit" }}>
             Home
           </a>
-          <a href="/best-seller" style={{ textDecoration: "none", color: "inherit" }}>
+          <a
+            href="/best-seller"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
             Best Sellers
           </a>
-          <a href="/contact" style={{ textDecoration: "none", color: "inherit" }}>
+          <a
+            href="/contact"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
             Contact
           </a>
-          <a href="/companies" style={{ textDecoration: "none", color: "inherit" }}>
+          <a
+            href="/companies"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
             Companies
           </a>
         </div>
-        <div>
-          <a
-            href="/login"
-            style={{
-              fontWeight: "bold",
-              textDecoration: "none",
-              color: "inherit",
-            }}
-          >
-            Login or Register
-          </a>
+        <div
+          style={{ position: "relative" }}
+          className="user-dropdown-container"
+        >
+          {isLoggedIn && user ? (
+            <button
+              onClick={toggleDropdown}
+              style={{
+                fontWeight: "bold",
+                textDecoration: "none",
+                color: "inherit",
+                backgroundColor: "transparent",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "0.875rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.25rem",
+                padding: "0.25rem 0.5rem",
+                borderRadius: "0.25rem",
+                outline: "none",
+              }}
+            >
+              Welcome, {user.firstName || user.email?.split("@")[0] || "User"}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              style={{
+                fontWeight: "bold",
+                textDecoration: "none",
+                color: "inherit",
+              }}
+            >
+              Login or Register
+            </Link>
+          )}
+
+          {isDropdownOpen && isLoggedIn && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                right: 0,
+                backgroundColor: "#fff",
+                border: "1px solid #e5e7eb",
+                borderRadius: "0.25rem",
+                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                minWidth: "150px",
+                zIndex: 1000,
+                padding: "0.5rem 0",
+              }}
+            >
+              <button
+                onClick={handleProfileClick}
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "0.75rem 1rem",
+                  border: "none",
+                  backgroundColor: "transparent",
+                  cursor: "pointer",
+                  fontSize: "0.9rem",
+                  color: "#4b5563",
+                  display: "block",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                My Profile
+              </button>
+              <button
+                onClick={handleLogout}
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "0.75rem 1rem",
+                  border: "none",
+                  backgroundColor: "transparent",
+                  cursor: "pointer",
+                  fontSize: "0.9rem",
+                  color: "#4b5563",
+                  display: "block",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

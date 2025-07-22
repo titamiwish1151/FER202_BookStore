@@ -1,10 +1,14 @@
 // src/App.js
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/HomePage";
+
 import { MainNavigation } from "./components/MainNavigation";
 import SubNavigation from "./components/SubNavigation";
 import AuthPage from "./pages/AuthPage";
 import HeaderTopBar from "./components/HeaderTopBar";
+import HomePageContent from "./pages/HomePageContent";
+import InputForm from "./components/InputForm";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+
 
 function App() {
   return (
@@ -23,11 +27,14 @@ function App() {
         <SubNavigation />
 
         <Routes>
-          {/* Define a route for the authentication page */}
-          <Route path="/" element={<Home />} />
-          {/* You can add more routes here for other pages, e.g.: */}
+          <Route path="/" element={<HomePageContent />} />
           <Route path="/login" element={<AuthPage />} />
-          {/* <Route path="/contact" element={<ContactPage />} /> */}
+          <Route path="/fullSignup" element={<InputForm />} />
+          <Route path="/lost-password" element={<ForgotPasswordPage />} />
+          {/* <Route path="/login" element={<RegisterPage />} /> */}
+          {/* <Route path="/books" element={<BookListPage />} /> */}
+          {/* <Route path="/signup" element={<SignupPage />} /> */}
+          {/* Add more routes as needed */}
         </Routes>
       </div>
     </Router>

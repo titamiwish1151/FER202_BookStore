@@ -16,7 +16,7 @@ const MainNavigation = () => (
         {/* Added max-w-full and explicit width/height for better image sizing control */}
         <img
           src="https://www.ikea.com/global/assets/logos/logo-ikea.svg"
-          alt="IKEA Logo"
+          alt="Vivlio Logo"
           style={{
             height: "2.5rem",
             width: "auto",
