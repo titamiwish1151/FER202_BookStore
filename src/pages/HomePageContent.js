@@ -1,6 +1,7 @@
 import DeliveryServicesSection from "../components/DeliveryServiceSection";
 import HeroBanner from "../components/HeroBanner";
 import WelcomeSection from "../components/WelcomeSection";
+import ProductGridSection from "../components/ProductGridSection";
 
 const HomePageContent = () => {
 //   // Sample products for ProductGridSection
@@ -15,6 +16,7 @@ const HomePageContent = () => {
     <>
       <HeroBanner />
       <WelcomeSection />
+      <ProductGridSection />
       <DeliveryServicesSection />
   
     </>

@@ -1,8 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// Lấy thông tin user từ localStorage (nếu có)
+const savedUser = JSON.parse(localStorage.getItem("user"));
+
 const initialState = {
-  user: null,
-  isLoggedIn: false,
+  user: savedUser || null,
+  isLoggedIn: !!savedUser,
 };
 
 const authSlice = createSlice({
@@ -12,22 +15,24 @@ const authSlice = createSlice({
     login(state, action) {
       state.user = action.payload;
       state.isLoggedIn = true;
+      localStorage.setItem("user", JSON.stringify(action.payload));
     },
     signup(state, action) {
-      // Logic changed: Initial signup only stores email (or basic user data).
-      // isLoggedIn is NOT set to true here.
-      state.user = { email: action.payload.email }; // Ensure only email is stored initially
-      state.isLoggedIn = false; // Explicitly set to false or keep as initial state
+      const user = { email: action.payload.email };
+      state.user = user;
+      state.isLoggedIn = false;
+      localStorage.setItem("user", JSON.stringify(user));
     },
     updateUserProfile(state, action) {
-      // This reducer updates the user profile with more details
-      // It merges the new payload data into the existing user object
-      state.user = { ...state.user, ...action.payload };
-      state.isLoggedIn = true; // isLoggedIn is set to true ONLY after profile is completed
+      const updatedUser = { ...state.user, ...action.payload };
+      state.user = updatedUser;
+      state.isLoggedIn = true;
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     },
     logout(state) {
       state.user = null;
       state.isLoggedIn = false;
+      localStorage.removeItem("user");
     },
   },
 });
